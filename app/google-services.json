@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "394164173261",
+    "firebase_url": "https://reood-104bd.firebaseio.com",
+    "project_id": "reood-104bd",
+    "storage_bucket": "reood-104bd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:394164173261:android:393b57dd7fc2c168af6c84",
+        "android_client_info": {
+          "package_name": "com.ecommerce.ecommerce"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "394164173261-r22oi8r53embt9mhvi9cquauu8hsnit6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSYgNVAgv4b7mTBlAKZT4sjWgxOUkwPto"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "394164173261-r22oi8r53embt9mhvi9cquauu8hsnit6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
