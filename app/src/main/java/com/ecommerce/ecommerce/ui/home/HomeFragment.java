@@ -11,10 +11,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,14 +23,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ecommerce.ecommerce.Activities.SearchActivity;
 
 import com.ecommerce.ecommerce.Adapters.BannerAdapter;
-import com.ecommerce.ecommerce.Adapters.CuisineAdapter;
 import com.ecommerce.ecommerce.Adapters.ThumbnailAdapter;
 import com.ecommerce.ecommerce.AllApiIneterface;
 import com.ecommerce.ecommerce.Bean;
 import com.ecommerce.ecommerce.CategoryPOJO.CategoryBean;
 import com.ecommerce.ecommerce.CategoryPOJO.Datum;
-import com.ecommerce.ecommerce.DataStructure.Cuisine;
 import com.ecommerce.ecommerce.R;
+import com.ecommerce.ecommerce.RestaurantPOJO.RestaurantBean;
+import com.ecommerce.ecommerce.RestaurantPOJO.RestaurantDatum;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -54,9 +54,11 @@ public class HomeFragment extends Fragment {
 
     RecyclerView banner, cuisine, thumbnails;
     TextView searchbox;
-    Button pickup,delivery;
+    Button pickup, delivery;
     CategoryAdapter adapter;
+    RestaurantAdapter adapter1;
     List<Datum> list;
+    List<RestaurantDatum> list1;
     ProgressBar progressBar;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -100,6 +102,12 @@ public class HomeFragment extends Fragment {
         cuisine.setAdapter(adapter);
         cuisine.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
+        list1 = new ArrayList<>();
+        adapter1 = new RestaurantAdapter(getContext(), list1);
+        thumbnails.setAdapter(adapter1);
+        RecyclerView.LayoutManager manager = new GridLayoutManager(getContext(), 2);
+        thumbnails.setLayoutManager(manager);
+
         ArrayList<String> bannerList = new ArrayList<>();
         bannerList.add("https://s3.envato.com/files/273273308/01_preview.jpg");
         bannerList.add("https://s3.envato.com/files/273273308/01_preview.jpg");
@@ -119,7 +127,7 @@ public class HomeFragment extends Fragment {
         CuisineAdapter cuisineAdapter = new CuisineAdapter(getActivity(), cuisineList);
         cuisine.setAdapter(cuisineAdapter);*/
 
-        ArrayList<String> dishList = new ArrayList<>();
+     /*   ArrayList<String> dishList = new ArrayList<>();
         dishList.add("Noodles");
         dishList.add("Veg Soup");
         dishList.add("Grilled Chicken");
@@ -128,6 +136,8 @@ public class HomeFragment extends Fragment {
         dishList.add("Chicken Manchurian");
         ThumbnailAdapter thumbnailAdapter = new ThumbnailAdapter(getActivity(), dishList);
         thumbnails.setAdapter(thumbnailAdapter);
+       */
+
         return root;
     }
 
@@ -159,7 +169,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onResponse(Call<CategoryBean> call, Response<CategoryBean> response) {
 
-                boolean a =true;
+                boolean a = true;
                 if (response.body().getStatus().equals(a)) {
 
                     adapter.setData(response.body().getData());
@@ -172,6 +182,30 @@ public class HomeFragment extends Fragment {
             @Override
             public void onFailure(Call<CategoryBean> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
+            }
+        });
+
+
+        Call<RestaurantBean> call1 = cr.getExampleMethod("Basic " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZmlyc3RfbmFtZSI6ImRkIiwibGFzdF9uYW1lIjoiYmhhdHQiLCJwaG9uZV9udW1iZXIiOiIzMzMzMzMzMzMzIiwiZW1haWwiOiJkZEBnbWFpbC5jb20iLCJ1c2VyX3R5cGUiOjEsInVzZXJfdHlwZV90ZXh0IjoiU3RhbmRhcmQgVXNlciIsInByb2ZpbGVfcGljdHVyZV9pZCI6IiIsInByb2ZpbGVfcGljdHVyZV91cmwiOiIiLCJkZXZpY2VfdG9rZW4iOiIiLCJleHAiOjE2MzA2ODk0OTJ9.uomxlmGDn-7uFWZnmObaFDtJU9GK7WopxdkL3QKgX_M");
+        call1.enqueue(new Callback<RestaurantBean>() {
+            @Override
+            public void onResponse(Call<RestaurantBean> call, Response<RestaurantBean> response) {
+
+                boolean a = true;
+                if (response.body().getStatus().equals(a)) {
+                    Log.d("DDDD", response.body().getData().get(0).getName());
+
+                    adapter1.setData(response.body().getData());
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<RestaurantBean> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Registration failed, Try again", Toast.LENGTH_LONG).show();
+                //progressBar.setVisibility(View.GONE);
+                Log.d("DDDD", "FAIL");
+
             }
         });
     }
@@ -240,6 +274,89 @@ public class HomeFragment extends Fragment {
 
                 name = itemView.findViewById(R.id.cuisine_name);
                 image = itemView.findViewById(R.id.cuisine_icon);
+
+
+            }
+        }
+    }
+
+
+    class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.ViewHolder> {
+
+        Context context;
+        List<RestaurantDatum> list = new ArrayList<>();
+
+        public RestaurantAdapter(Context context, List<RestaurantDatum> list) {
+            this.context = context;
+            this.list = list;
+        }
+
+        public void setData(List<RestaurantDatum> list) {
+            this.list = list;
+            notifyDataSetChanged();
+        }
+
+        @NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.item_layout, parent, false);
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
+            final RestaurantDatum item = list.get(position);
+
+            DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true).cacheOnDisk(true).resetViewBeforeLoading(false).build();
+            ImageLoader loader = ImageLoader.getInstance();
+            // loader.displayImage(item.getIconUrl(), holder.image, options);
+
+            holder.thumbnail_dish_title.setText(item.getName());
+            holder.address.setText(item.getAddress());
+
+            boolean status = item.getActive();
+            if (status == true) {
+
+                holder.active.setText("OPEN");
+            } else {
+                holder.active.setText("CLOSE");
+
+            }
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                   /* Intent intent = new Intent(context, SubCat.class);
+                    intent.putExtra("id", item.getId());
+                    intent.putExtra("title", item.getName());
+                    intent.putExtra("image", item.getImage());
+                    context.startActivity(intent);*/
+
+                }
+            });
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return list.size();
+        }
+
+        class ViewHolder extends RecyclerView.ViewHolder {
+
+            ImageView image;
+            TextView thumbnail_dish_title, address, active;
+
+            public ViewHolder(@NonNull View itemView) {
+                super(itemView);
+
+                thumbnail_dish_title = itemView.findViewById(R.id.thumbnail_dish_title);
+                address = itemView.findViewById(R.id.address);
+                image = itemView.findViewById(R.id.food_image_thumbnail);
+                active = itemView.findViewById(R.id.active);
 
 
             }

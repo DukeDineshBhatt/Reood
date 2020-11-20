@@ -11,9 +11,18 @@ public class Bean extends Application {
 
     public String baseurl = "https://reood.herokuapp.com/";
 
+    String token;
 
     public static Context getContext() {
         return context;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     @Override
@@ -22,6 +31,7 @@ public class Bean extends Application {
 
         context = getApplicationContext();
         ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
+
 
     }
 }

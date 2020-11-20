@@ -193,14 +193,12 @@ public class SigninActivity extends AppCompatActivity {
                                     if (response.body().getStatus().equals(a)) {
                                         Toast.makeText(getApplicationContext(), "Registration successful!", Toast.LENGTH_LONG).show();
 
-                                        SharedPreferences.Editor prefEditor = PreferenceManager.getDefaultSharedPreferences(SigninActivity.this).edit();
-                                        prefEditor.putString("first", firstTxt);
-                                        prefEditor.putString("last", lastTxt);
-                                        prefEditor.putString("phone", phoneTxt);
-                                        prefEditor.putString("email", emailTxt);
-                                        prefEditor.putString("password", passwordTxt);
-                                        prefEditor.putString("uid", uid);
-                                        prefEditor.apply();
+                                        Log.d("DINESH","Dinesh");
+                                        SharedPreferences mPrefs = getSharedPreferences("myAppPrefs", Context.MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = mPrefs.edit();
+                                        editor.putString("uid", uid);
+                                        editor.putString("token", response.body().getData().get(0).getToken());
+                                        editor.commit();
 
                                         progressBar.setVisibility(View.GONE);
                                         Intent intent = new Intent(SigninActivity.this, WelcomeActivity.class);

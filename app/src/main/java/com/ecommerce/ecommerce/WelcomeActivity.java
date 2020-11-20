@@ -125,25 +125,19 @@ public class WelcomeActivity extends AppCompatActivity {
 
                                     if (a.equals("true")) {
 
-                                       /* SharedPreferences.Editor prefEditor = PreferenceManager.getDefaultSharedPreferences(WelcomeActivity.this).edit();
-                                        prefEditor.putString("first", firstTxt);
-                                        prefEditor.putString("last", lastTxt);
-                                        prefEditor.putString("phone", phoneTxt);
-                                        prefEditor.putString("email", emailTxt);
-                                        prefEditor.putString("password", passwordTxt);
-                                        prefEditor.putString("uid", uid);
-                                        prefEditor.apply();
-*/
                                         SharedPreferences mPrefs = getSharedPreferences("myAppPrefs", Context.MODE_PRIVATE);
                                         SharedPreferences.Editor editor = mPrefs.edit();
                                         editor.putString("uid", uid);
+                                        editor.putString("token", response.body().getData().get(0).getToken());
                                         editor.putBoolean("is_logged_before", true);
                                         editor.commit();
 
+                                        Log.d("DDDD",response.body().getData().get(0).getToken());
+
+                                        ((Bean) WelcomeActivity.this.getApplication()).setToken(response.body().getData().get(0).getToken());
                                         Toast.makeText(getApplicationContext(), "Login successful!", Toast.LENGTH_LONG).show();
                                         progressBar.setVisibility(View.GONE);
                                         Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
-                                        intent.putExtra("uid", uid);
                                         startActivity(intent);
                                         finishAffinity();
                                     }
